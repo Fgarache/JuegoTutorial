@@ -38,7 +38,7 @@ public class VentanaPrincipal extends JFrame implements KeyListener {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setSize(520, 520);
         this.setLocationRelativeTo(null);
-        this.getContentPane().setBackground(Color.BLACK);
+        this.getContentPane().setBackground(Color.red);
         this.setVisible(true);
         this.addKeyListener(this);
         naveImage = ImageIO.read(Objects.requireNonNull(this.getClass().getResource("nave.png")));
@@ -109,22 +109,8 @@ public class VentanaPrincipal extends JFrame implements KeyListener {
                 }
             }
 
-            //intercepcion de balas con naves
-            for (int i = 0; i < 2; i++) {
-                for (int j = 0; j < 5; j++) {
-                    for (int k = 0; k < disparadas; k++) {
 
-                        /*if (disparos[k].intersects(navesEnemigas[i][j])){
-                            *//*ydisparos[k]=-40;
-                            enemy_y[i][j]=600;*//*
 
-                            System.out.println("interception  ");
-                        }*/
-                    }
-
-                }
-
-            }
             repaint();
         });
     }
@@ -133,9 +119,7 @@ public class VentanaPrincipal extends JFrame implements KeyListener {
     public void paint(Graphics g) {
         super.paint(g);
         g2 = (Graphics2D) g;
-        g2.setColor(Color.BLACK);
         nave = new Rectangle2D.Double(xnave, 410, 60, 90);
-       // g2.fill(nave);
         g2.drawImage(naveImage, xnave-5,410, 80,90, this);
 
         //elipse balas
@@ -146,6 +130,14 @@ public class VentanaPrincipal extends JFrame implements KeyListener {
         }
 
         start_enemy();
+        writhe_screen();
+    }
+    public void writhe_screen  (){
+        g2.setFont(new Font("Tahoma", Font.ITALIC,12));
+        g2.drawString("Vidas  ",20, 515);
+        g2.drawString("Level  ", 150,515);
+        g2.drawString("Score  ",260,515);
+        g2.drawString("Balas  ",370,515);
     }
 
     public void timerEnemy() {
@@ -184,7 +176,24 @@ public class VentanaPrincipal extends JFrame implements KeyListener {
 
             }
 
-            //repaint();
+            //intercepcion de balas con naves
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < 5; j++) {
+                    for (int k = 0; k < disparadas; k++) {
+
+                        if (disparos[k].intersects(navesEnemigas[i][j])){
+                            ydisparos[k]=-40;
+                            enemy_y[i][j]=600;
+
+                            System.out.println("interception  ");
+                        }
+                    }
+
+                }
+
+            }
+
+            repaint();
         });
     }
 
