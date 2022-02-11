@@ -22,6 +22,7 @@ public class VentanaPrincipal extends JFrame implements KeyListener {
     public int[][] enemy_y = new int[2][5];
     public int aleatory1, aleatory2, counterDown;
     public boolean down = false;
+    public static int score =0;
 
     //disparos
     public Ellipse2D[] disparos = new Ellipse2D[20];
@@ -31,7 +32,7 @@ public class VentanaPrincipal extends JFrame implements KeyListener {
 
     //image
     public Image naveImage;
-    public Image [][] naveEnemy= new Image[2][5];
+    public Image[][] naveEnemy = new Image[2][5];
 
 
     VentanaPrincipal() throws IOException {
@@ -45,7 +46,7 @@ public class VentanaPrincipal extends JFrame implements KeyListener {
 
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 5; j++) {
-                naveEnemy [i][j]=ImageIO.read(Objects.requireNonNull(this.getClass().getResource("nave_enemy1.png")));
+                naveEnemy[i][j] = ImageIO.read(Objects.requireNonNull(this.getClass().getResource("nave_enemy1.png")));
 
             }
 
@@ -110,7 +111,6 @@ public class VentanaPrincipal extends JFrame implements KeyListener {
             }
 
 
-
             repaint();
         });
     }
@@ -120,7 +120,7 @@ public class VentanaPrincipal extends JFrame implements KeyListener {
         super.paint(g);
         g2 = (Graphics2D) g;
         nave = new Rectangle2D.Double(xnave, 410, 60, 90);
-        g2.drawImage(naveImage, xnave-5,410, 80,90, this);
+        g2.drawImage(naveImage, xnave - 5, 410, 80, 90, this);
 
         //elipse balas
         g2.setColor(Color.yellow);
@@ -132,12 +132,34 @@ public class VentanaPrincipal extends JFrame implements KeyListener {
         start_enemy();
         writhe_screen();
     }
-    public void writhe_screen  (){
-        g2.setFont(new Font("Tahoma", Font.ITALIC,12));
-        g2.drawString("Vidas  ",20, 515);
-        g2.drawString("Level  ", 150,515);
-        g2.drawString("Score  ",260,515);
-        g2.drawString("Balas  ",370,515);
+
+    public void writhe_screen() {
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (nave.intersects(navesEnemigas[i][j])) {
+                    g2.setFont(new Font("Tahoma", Font.BOLD, 72));
+                    g2.drawString("Perdiste  ", 102, 300);
+
+                    t.stop();
+                    frequencyEnemy.stop();
+
+                }
+
+            }
+
+        }
+
+
+        g2.setFont(new Font("Tahoma", Font.ITALIC, 12));
+        g2.drawString("Vidas  ", 20, 515);
+        g2.drawString("Level  ", 150, 515);
+        g2.drawString("Score-"+score, 260, 515);
+        if (contadorrecarga <= 4) {
+            g2.drawString("Balas"+(contadorrecarga+-5), 370, 515);
+        }else{
+            g2.drawString("Balas"+("-Recargar"), 370, 515);
+        }
+        //g2.drawString("Balas"+(contadorrecarga+-5), 370, 515);
     }
 
     public void timerEnemy() {
@@ -163,28 +185,16 @@ public class VentanaPrincipal extends JFrame implements KeyListener {
                 attack_enemy();
             }
 
-            for (int i = 0; i < 2; i++) {
-                for (int j = 0; j < 5; j++) {
-                    if (nave.intersects(navesEnemigas[i][j])) {
-                        System.out.println("GAME OVER");
-                        t.stop();
-                        frequencyEnemy.stop();
-
-                    }
-
-                }
-
-            }
-
             //intercepcion de balas con naves
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 5; j++) {
                     for (int k = 0; k < disparadas; k++) {
 
-                        if (disparos[k].intersects(navesEnemigas[i][j])){
-                            ydisparos[k]=-40;
-                            enemy_y[i][j]=600;
-
+                        if (disparos[k].intersects(navesEnemigas[i][j])) {
+                            ydisparos[k] = -40;
+                            enemy_y[i][j] = 600;
+                            score ++;
+                            System.out.println(score);
                             System.out.println("interception  ");
                         }
                     }
@@ -204,16 +214,11 @@ public class VentanaPrincipal extends JFrame implements KeyListener {
         for (int rows = 0; rows < 2; rows++) {
             for (int columns = 0; columns < 5; columns++) {
                 navesEnemigas[rows][columns] = new Rectangle2D.Double(enemy_ini + enemy_increase_x + moveEnemy, 19 + enemy_y[rows][columns], 60, 90);
-                g2.drawImage(naveEnemy[rows][columns], enemy_ini + enemy_increase_x + moveEnemy, 19 + enemy_y[rows][columns],85,85,this);
+                g2.drawImage(naveEnemy[rows][columns], enemy_ini + enemy_increase_x + moveEnemy, 19 + enemy_y[rows][columns], 85, 85, this);
                 enemy_increase_x += 80;
-                //g2.fill(navesEnemigas[rows][columns]);
-
-
             }
             enemy_increase_x = 0;
             enemy_increase_y = 100;
-
-
         }
 
         //repaint();
@@ -248,8 +253,6 @@ public class VentanaPrincipal extends JFrame implements KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_UP) {
             System.out.println("Recharge");
             contadorrecarga = 0;
-
-
         }
     }
 
